@@ -5,7 +5,16 @@ const saved = localStorage.getItem("tasks");
 if (saved) {
   tasks.push(...JSON.parse(saved));
 }
-
+// ─── Restore theme ───────────────────────────────────
+const savedTheme = localStorage.getItem("theme") || "light";
+document.body.dataset.theme = savedTheme;
+const themeIcon = document.getElementById("theme-icon");
+if (themeIcon) {
+  themeIcon.innerHTML =
+    savedTheme === "dark"
+      ? '<i class="fa-solid fa-sun text-orange-400"></i>'
+      : '<i class="fa-solid fa-moon text-yellow-400"></i>';
+}
 // ─── Stats ───────────────────────────────────────────
 function updateStats() {
   const cards = document.querySelectorAll(".stat-card span");
@@ -131,8 +140,6 @@ function render(list = tasks) {
           </div>
         </div>
       </div>`;
-    console.log(i);
-    console.log(t);
   });
 
   updateStats();
@@ -171,15 +178,15 @@ function saveTask() {
     deadline: document.getElementById("f-deadline").value,
     assignee: document.getElementById("f-assignee").value.trim(),
   };
-  //   for (const id of ["f-name", "f-status", "f-priority", "f-deadline", "f-assignee"]) {
-  //     const el = document.getElementById(id);
+  for (const id of ["f-name", "f-status", "f-priority", "f-deadline", "f-assignee"]) {
+    const el = document.getElementById(id);
 
-  //     if (!el.value.trim()) {
-  //       alert(`${id.replace("f-", "")} is required!`);
-  //       el.focus();
-  //       return;
-  //     }
-  //   }
+    if (!el.value.trim()) {
+      alert(`${id.replace("f-", "")} is required!`);
+      el.focus();
+      return;
+    }
+  }
   if (editIdx >= 0) {
     tasks[editIdx] = t;
   } else {
@@ -239,9 +246,11 @@ function toggleTheme() {
   if (body.dataset.theme === "dark") {
     body.dataset.theme = "light";
     icon.innerHTML = '<i class="fa-solid fa-moon text-yellow-400"></i>';
+    localStorage.setItem("theme", "light");
   } else {
     body.dataset.theme = "dark";
     icon.innerHTML = '<i class="fa-solid fa-sun text-orange-400"></i>';
+    localStorage.setItem("theme", "dark");
   }
 }
 // ─── Init ────────────────────────────────────────────
