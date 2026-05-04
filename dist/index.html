@@ -1,0 +1,204 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="./output.css" rel="stylesheet" />
+    <script src="https://kit.fontawesome.com/6dd8ac935e.js" crossorigin="anonymous"></script>
+    <title>Task / Project Tracker</title>
+  </head>
+  <body class="bg-(--bg-primary) text-(--text-primary) p-6">
+    <header class="p-0 mb-10">
+      <h1 class="text-[2rem] font-bold text-(--text-primary)">Personal Tracker</h1>
+      <p class="text-7xl(--text-secondary) text-(--text-secondary)">Keep track of what matters most to you!</p>
+    </header>
+    <main>
+      <section class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        <div class="stat-card">
+          <h2 class="text-(--info)">Total Task</h2>
+          <span class="text-xl sm:text-[2.5rem]">0</span>
+        </div>
+
+        <div class="stat-card">
+          <h2 class="text-(--process)">In Progress</h2>
+          <span class="text-xl sm:text-[2.5rem]">0</span>
+        </div>
+
+        <div class="stat-card">
+          <h2 class="text-(--success)">Completed</h2>
+          <span class="text-xl sm:text-[2.5rem]">0</span>
+        </div>
+
+        <div class="stat-card">
+          <h2 class="text-(--delete)">Deleted</h2>
+          <span class="text-xl sm:text-[2.5rem]">0</span>
+        </div>
+      </section>
+      <section class="flex flex-col sm:flex-row gap-5 justify-between mt-5 py-2.5">
+        <button
+          onclick="openModal(-1)"
+          class="bg-(--accent) p-2 rounded-3xl text-white text-[.9rem] font-semibold tracking-wide cursor-pointer hover:bg-(--accent-hover)"
+        >
+          + Add New Task
+        </button>
+
+        <div class="flex justify-center sm:gap-5 gap-3">
+          <div onclick="toggleTheme()" class="flex items-center justify-center h-10 w-10 cursor-pointer">
+            <span
+              id="theme-icon"
+              class="flex items-center justify-center w-10 h-10 rounded-full bg-(--bg-secondary) border border-(--border-strong) text-yellow-400 hover:bg-(--surface-hover) hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer shadow-sm"
+            >
+              <i class="fa-solid fa-moon text-yellow-400"></i>
+            </span>
+          </div>
+          <input
+            type="text"
+            id="Search"
+            placeholder="Search Task / Projects...."
+            class="px-4 border-(--border-strong) border-[1.8px] rounded-3xl text-[.9rem] outline-0 font-semibold focus:bg-(--surface-active) hover:bg-(--surface-hover)"
+          />
+          <button
+            class="flex items-center gap-1.5 px-4 py-1.5 text-sm font-medium rounded-full bg-[#7b6ff0] hover:bg-[#9286f4] text-white transition"
+          >
+            <!-- sort icon -->
+            Sort
+          </button>
+        </div>
+      </section>
+      <section>
+        <!-- Desktop table (sm and above) -->
+        <div class="hidden sm:block rounded-sm border border-(--border-strong) max-h-[400px] overflow-y-auto">
+          <table class="table-auto w-full text-sm text-left">
+            <thead
+              class="bg-(--bg-tertiary) text-xs uppercase tracking-wide border-b border-(--border-strong) sticky top-0 z-10"
+            >
+              <tr>
+                <th class="px-4 py-3 w-10">No.</th>
+                <th class="px-4 py-3">Task Name</th>
+                <th class="px-4 py-3">Description</th>
+                <th class="px-4 py-3">Status</th>
+                <th class="px-4 py-3">Deadline</th>
+                <th class="px-4 py-3">Assignee</th>
+                <th class="px-4 py-3">Priority</th>
+                <th class="px-4 py-3 text-center">Action</th>
+              </tr>
+            </thead>
+
+            <tbody id="table-body" class="divide-y divide-(--border-strong)"></tbody>
+          </table>
+        </div>
+
+        <!-- Mobile cards (below sm) — SIBLING, not child -->
+        <div id="card-body" class="sm:hidden space-y-3"></div>
+
+        <!-- Empty state — SIBLING, visible in both -->
+        <p id="empty-msg" class="hidden text-center text-(--text-secondary) text-sm py-10">
+          No tasks yet. Click "+ Add task" to get started.
+        </p>
+      </section>
+
+      <!-- Overlay -->
+      <section
+        id="modal-overlay"
+        onclick="if (event.target === this) closeModal();"
+        class="hidden fixed inset-0 bg-black/40 flex items-center justify-center z-50 px-4"
+      >
+        <form onsubmit="onSubmit()">
+          <!-- Modal card -->
+          <div class="bg-(--bg-primary) rounded-xl border border-(--border-strong) p-6 w-full max-w-md">
+            <!-- Header -->
+            <h2 id="modal-title" class="text-base font-medium text-(--text-primary) mb-4">Add task</h2>
+
+            <div class="mb-3">
+              <label class="block text-xs text-(--text-tertiary) mb-1">Task Name</label>
+              <input
+                id="f-name"
+                type="text"
+                placeholder="Enter task name"
+                class="w-full text-sm px-3 py-2 rounded-lg border border-(--border-strong) focus:outline-none focus:border-(--border-hover)"
+                required
+              />
+            </div>
+
+            <div class="mb-3">
+              <label class="block text-xs text-(--text-tertiary) mb-1">Description</label>
+              <textarea
+                id="f-desc"
+                rows="2"
+                placeholder="Describe the task..."
+                class="w-full text-sm px-3 py-2 rounded-lg border border-(--border-strong) focus:outline-none focus:border-(--border-hover) resize-none"
+              ></textarea>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3 mb-3">
+              <div>
+                <label class="block text-xs text-(--text-tertiary) mb-1">Status</label>
+                <select
+                  id="f-status"
+                  class="w-full text-sm px-3 py-2 rounded-lg border border-(--border-strong) focus:outline-none focus:border-(--border-hover) bg-(--bg-primary)"
+                  required
+                >
+                  <option value="success">Success</option>
+                  <option value="process">Process</option>
+                  <option value="todo">ToDo</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-xs text-(--text-tertiary) mb-1">Priority</label>
+                <select
+                  id="f-priority"
+                  class="w-full text-sm px-3 py-2 rounded-lg border border-(--border-strong) focus:outline-none focus:border-(--border-hover) bg-(--bg-primary)"
+                  required
+                >
+                  <option>High</option>
+                  <option>Medium</option>
+                  <option>Low</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3 mb-5">
+              <div>
+                <label class="block text-xs text-(--text-tertiary) mb-1">Deadline</label>
+                <input
+                  id="f-deadline"
+                  type="date"
+                  class="w-full text-sm px-3 py-2 rounded-lg border border-(--border-strong) focus:outline-none focus:border-(--border-hover)"
+                  required
+                />
+              </div>
+              <div>
+                <label class="block text-xs text-(--text-tertiary) mb-1">Assignee</label>
+                <input
+                  id="f-assignee"
+                  type="text"
+                  placeholder="Name"
+                  class="w-full text-sm px-3 py-2 rounded-lg border border-(--border-strong) focus:outline-none focus:border-(--border-hover)"
+                  required
+                />
+              </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="flex justify-end gap-2">
+              <button
+                onclick="closeModal()"
+                class="text-sm px-4 py-2 rounded-lg border border-(--border-strong) hover:bg-(--bg-secondary) text-(--text-primary) transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                onclick="saveTask()"
+                class="text-sm px-4 py-2 rounded-lg bg-(--accent) hover:opacity-80 transition-opacity font-medium"
+              >
+                Save task
+              </button>
+            </div>
+          </div>
+        </form>
+      </section>
+    </main>
+    <script src="../js/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,85 @@
+@import "tailwindcss";
+
+/* ─── Light mode (default) ─── */
+:root {
+  /* Backgrounds */
+  --bg-primary: #ffffff;
+  --bg-secondary: #eceae3;
+  --bg-tertiary: #f5f4f0;
+
+  /* Typography */
+  --text-primary: #1a1a18;
+  --text-secondary: #5a5a55;
+  --text-tertiary: #9a9a93;
+
+  /* Accent */
+  --accent: #5b4ee8;
+  --accent-hover: #4a3dc8;
+  --accent-muted: #eae8fc;
+  --accent-text: #3d31a6;
+
+  /* Semantic states */
+  --success: #1d9e75;
+  --success-bg: #e1f5ee;
+  --process: #ba7517;
+  --process-bg: #faeeda;
+  --info: #185fa5;
+  --info-bg: #e6f1fb;
+  --delete: #a32d2d;
+
+  /* Borders */
+  --border-default: #e2e0d8;
+  --border-hover: #c8c6bc;
+  --border-strong: #a8a69e;
+
+  /* Interactive surfaces */
+  --surface-hover: #eceae3;
+  --surface-active: #e2e0d8;
+  --overlay: rgba(0, 0, 0, 0.4);
+  --focus-ring: #5b4ee8;
+}
+
+/* ─── Dark mode ─── */
+[data-theme="dark"] {
+  /* Backgrounds */
+  --bg-primary: #141413;
+  --bg-secondary: #1e1d1b;
+  --bg-tertiary: #252420;
+
+  /* Typography */
+  --text-primary: #f0eee6;
+  --text-secondary: #a8a69e;
+  --text-tertiary: #6a6a63;
+
+  /* Accent */
+  --accent: #7b6ff0;
+  --accent-hover: #9286f4;
+  --accent-muted: #2a2552;
+  --accent-text: #afa9ec;
+
+  /* Semantic states */
+  --success: #5dcaa5;
+  --success-bg: #04342c;
+  --process: #ef9f27;
+  --process-bg: #412402;
+  --info: #85b7eb;
+  --info-bg: #042c53;
+  --delete: #a32d2d;
+
+  /* Borders */
+  --border-default: #2e2d29;
+  --border-hover: #3c3b36;
+  --border-strong: #52514c;
+
+  /* Interactive surfaces */
+  --surface-hover: #252420;
+  --surface-active: #2e2d29;
+  --overlay: rgba(0, 0, 0, 0.6);
+  --focus-ring: #7b6ff0;
+}
+@layer components {
+  .stat-card {
+    @apply bg-(--bg-tertiary) p-4 font-semibold rounded-md border border-(--border-strong) hover:bg-(--bg-secondary) hover:border-(--border-hover)
+      transition duration-300 ease-in-out;
+  }
+}
